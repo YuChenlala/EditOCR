@@ -1,7 +1,7 @@
 import PIL
 from flask import Flask, request, jsonify, abort, send_file
 import os
-from model.paddleOCR import image_to_text
+from model.OCR import image_to_text
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
@@ -57,7 +57,7 @@ with app.app_context():
     db.create_all()
 
 
-#限制文件格式为图片
+#限制文件格式为图�?
 ALLOWED_EXTENSIONS_IMAGE = {'png', 'jpg', 'jpeg'}
 
 ALLOWED_EXTENSIONS_JSON = {'json'}
@@ -69,7 +69,7 @@ def allowed_file_image(filename):
 def allowed_file_json(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_JSON
 
-#对传入数据进行检验
+#对传入数�?进�?��?��?
 @app.before_request
 def validate_files():
     endpoint = request.endpoint
@@ -97,8 +97,8 @@ def validate_files():
 
 @app.route('/upload', methods = ['POST'])
 def UploadApi():
-    images = request.files.getlist("image")  # 获取上传的多张图片
-    # 对图片进行处理
+    images = request.files.getlist("image")  # 获取上传的�?�张图片
+    # 对图片进行�?�理
     save_folder = 'uploads'
     os.makedirs(save_folder, exist_ok=True)
     cnt = 0
@@ -129,11 +129,11 @@ def UploadApi():
 # def OneImageApi():
 #     if 'image' not in request.files:
 #         return 'No file part'
-#     image = request.files.get("image")  # 获取上传的多张图片
+#     image = request.files.get("image")  # 获取上传的�?�张图片
 #     id = str(uuid.uuid4())
 #     delay_seconds = random.uniform(2, 7)/10
 #     time.sleep(delay_seconds)
-#     # 对图片进行处理
+#     # 对图片进行�?�理
 #     save_folder = 'uploads'
 #     id = str(uuid.uuid4())+id
 #     os.makedirs(save_folder, exist_ok=True)
@@ -149,15 +149,15 @@ def process_images():
         id = str(uuid.uuid4())
         delay_seconds = random.uniform(2, 7) / 10
         time.sleep(delay_seconds)
-        # 对图片进行处理
+        # 对图片进行�?�理
         save_folder = 'uploads'
         id = str(uuid.uuid4()) + id
         os.makedirs(save_folder, exist_ok=True)
         file_path = os.path.join(save_folder, f"{id}.png")
         image.save(file_path)  # 临时保存
         data = image_to_text(f"uploads/{id}.png")
-        os.remove(file_path)  # 处理完成后删除文件
-        results[image_id] = data  # 将识别结果保存到字典中
+        os.remove(file_path)  # 处理完成后删除文�?
+        results[image_id] = data  # 将识�?结果保存到字典中
         image_queue.task_done()
 
 @app.route('/one-image', methods=['POST'])
@@ -167,7 +167,7 @@ def OneImageApi():
     image = request.files.get("image")
     id = str(uuid.uuid4())
     image_queue.put((id, image))
-    # 等待图片处理完成后返回识别结果
+    # 等待图片处理完成后返回识�?结果
     while True:
         time.sleep(1)
         if id in results:
@@ -215,7 +215,7 @@ def SubmitApi():
     json_file = request.form['text']
     print(json_file)
     json_data = json.loads(json_file)
-    # 对图片进行处理
+    # 对图片进行�?�理
     save_folder = 'uploads'
     os.makedirs(save_folder, exist_ok=True)
     image_id = int(time.time())
@@ -308,7 +308,7 @@ def save_images(images):
 
     return image_urls
 
-# 启动处理图片的线程
+# �?动�?�理图片的线�?
 image_processor_thread = Thread(target=process_images)
 image_processor_thread.daemon = True
 image_processor_thread.start()
